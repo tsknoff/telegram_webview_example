@@ -12,7 +12,7 @@ bot.start((ctx) => {
                     {
                         text: "Открыть приложение",
                         web_app: {
-                            url: "https://my-cool-app.vercel.app/", // твой URL
+                            url: "https://webviewexample.vercel.app", // твой URL
                         },
                     },
                 ],
