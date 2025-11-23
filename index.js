@@ -1,34 +1,25 @@
-// index.js
-import { Telegraf } from "telegraf";
+const { Telegraf, Markup } = require("telegraf");
+require('dotenv').config();
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN); // BOT_TOKEN из env
 
-// команда /start с webapp-кнопкой
 bot.start((ctx) => {
-    ctx.reply("Открой WebApp:", {
-        reply_markup: {
-            keyboard: [
-                [
-                    {
-                        text: "Открыть приложение",
-                        web_app: {
-                            url: "https://webviewexample.vercel.app", // твой URL
-                        },
-                    },
-                ],
+    return ctx.reply(
+        "Привет! Нажми кнопку, чтобы открыть WebApp 👇",
+        Markup.keyboard([
+            [
+                Markup.button.webApp(
+                    "Открыть WebApp",
+                    "https://webviewexample.vercel.app//" // сюда подставишь URL фронтенда
+                ),
             ],
-            resize_keyboard: true,
-        },
-    });
-});
-
-// данные из WebApp приходят в виде web_app_data
-bot.on("message", (ctx) => {
-    if (ctx.message.web_app_data) {
-        const data = JSON.parse(ctx.message.web_app_data.data);
-        console.log("Получили из WebApp:", data);
-        ctx.reply(`WebApp сказал: ${data.action}, ts=${data.ts}`);
-    }
+        ]).resize()
+    );
 });
 
 bot.launch();
+console.log("Bot started");
+
+// аккуратно закрываем на SIGINT / SIGTERM
+process.once("SIGINT", () => bot.stop("SIGINT"));
+process.once("SIGTERM", () => bot.stop("SIGTERM"));
